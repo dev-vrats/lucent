@@ -1,0 +1,17 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /jobs/{jobId} {
+      // Only the owner can read, update, or delete their jobs
+      allow read, update, delete: if request.auth != null && request.auth.uid == resource.data.ownerId;
+      // Owner must be set to the authenticated user's uid on create
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.ownerId;
+
+      match /candidates/{candidateId} {
+        // Only the job owner can access candidates
+        allow read, write: if request.auth != null &&
+          get(/databases/$(database)/documents/jobs/$(jobId)).data.ownerId == request.auth.uid;
+      }
+    }
+  }
+}

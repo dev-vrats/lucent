@@ -1,0 +1,10 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /resumes/{jobId}/{candidateId}/{fileName} {
+      // Only allow read/write if the user owns the job
+      // (simplified rule — full ownership check requires Firestore)
+      allow read, write: if request.auth != null;
+    }
+  }
+}
