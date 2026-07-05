@@ -12,9 +12,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!loading && !user) {
-      router.replace('/login');
+      window.location.href = '/login';
     }
-  }, [user, loading, router]);
+  }, [user, loading]);
 
   if (loading) {
     return (

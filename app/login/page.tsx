@@ -57,8 +57,8 @@ function AuthPageInner() {
   }, [params]);
 
   useEffect(() => {
-    if (!authLoading && user) router.replace(returnTo);
-  }, [user, authLoading, router, returnTo]);
+    if (!authLoading && user) window.location.href = returnTo;
+  }, [user, authLoading, returnTo]);
 
   const validate = () => {
     let valid = true;
@@ -77,11 +77,12 @@ function AuthPageInner() {
       if (tab === 'signin') await login(email, password);
       else                  await signup(email, password);
       toast.success(tab === 'signin' ? 'Welcome back!' : 'Account created!');
-      router.push(returnTo);
+      setTimeout(() => {
+        window.location.href = returnTo;
+      }, 300);
     } catch (err: any) {
       const msg = getFirebaseErrorMessage(err.code);
       toast.error(msg);
-    } finally {
       setLoading(false);
     }
   };
@@ -91,12 +92,13 @@ function AuthPageInner() {
     try {
       await loginWithGoogle();
       toast.success('Welcome!');
-      router.push(returnTo);
+      setTimeout(() => {
+        window.location.href = returnTo;
+      }, 300);
     } catch (err: any) {
       if (err.code !== 'auth/popup-closed-by-user') {
         toast.error(getFirebaseErrorMessage(err.code));
       }
-    } finally {
       setGoogleLoading(false);
     }
   };
