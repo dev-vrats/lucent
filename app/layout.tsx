@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Fraunces, Plus_Jakarta_Sans, JetBrains_Mono } from 'next/font/google';
 import { Toaster } from 'react-hot-toast';
 import { AmbientGlow } from '@/components/background/AmbientGlow';
+import { AuthProvider } from '@/contexts/AuthContext';
 import './globals.css';
 
 const fraunces = Fraunces({
@@ -48,25 +49,27 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={`${fraunces.variable} ${plusJakarta.variable} ${jetbrainsMono.variable}`}
     >
       <body className="font-sans bg-[#071A1F] text-[#EAF3F0] min-h-screen">
-        <AmbientGlow />
-        <div className="relative z-10">
-          {children}
-        </div>
-        <Toaster
-          position="top-right"
-          toastOptions={{
-            style: {
-              background: '#0F2E36',
-              color: '#EAF3F0',
-              border: '1px solid rgba(164,191,157,0.14)',
-              borderRadius: '12px',
-              fontFamily: 'var(--font-plus-jakarta)',
-              fontSize: '14px',
-            },
-            success: { iconTheme: { primary: '#A4BF9D', secondary: '#071A1F' } },
-            error:   { iconTheme: { primary: '#D97878', secondary: '#071A1F' } },
-          }}
-        />
+        <AuthProvider>
+          <AmbientGlow />
+          <div className="relative z-10">
+            {children}
+          </div>
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              style: {
+                background: '#0F2E36',
+                color: '#EAF3F0',
+                border: '1px solid rgba(164,191,157,0.14)',
+                borderRadius: '12px',
+                fontFamily: 'var(--font-plus-jakarta)',
+                fontSize: '14px',
+              },
+              success: { iconTheme: { primary: '#A4BF9D', secondary: '#071A1F' } },
+              error:   { iconTheme: { primary: '#D97878', secondary: '#071A1F' } },
+            }}
+          />
+        </AuthProvider>
       </body>
     </html>
   );

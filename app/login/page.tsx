@@ -18,7 +18,7 @@ function GoogleIcon() {
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth } from '@/contexts/AuthContext';
 import toast from 'react-hot-toast';
 
 function getFirebaseErrorMessage(code: string): string {
