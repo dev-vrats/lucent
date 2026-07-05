@@ -1,7 +1,59 @@
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 @import "tailwindcss";
-@config "../tailwind.config.ts";
+
+@theme {
+  --font-display: var(--font-fraunces), Georgia, serif;
+  --font-sans: var(--font-plus-jakarta), system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), monospace;
+
+  --color-primary: #0C3D48;
+  --color-secondary: #A4BF9D;
+  --color-bg-base: #071A1F;
+  --color-bg-surface: #0F2E36;
+  --color-text-primary: #EAF3F0;
+  --color-text-secondary: #93AFA8;
+  --color-text-muted: #5E7A76;
+  --color-glow-a: #0145F2;
+  --color-glow-b: #EDF15F;
+  --color-score-high: #A4BF9D;
+  --color-score-mid: #E8C468;
+  --color-score-low: #D97878;
+  --color-border-glass: rgba(164, 191, 157, 0.14);
+
+  --background-image-glass: linear-gradient(135deg, rgba(15, 46, 54, 0.55), rgba(15, 46, 54, 0.35));
+
+  --radius-bento: 28px;
+
+  --shadow-glow-sm: 0 0 20px rgba(1, 69, 242, 0.15);
+  --shadow-glow-md: 0 0 40px rgba(1, 69, 242, 0.2);
+  --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.2);
+  --shadow-card-hover: 0 16px 48px rgba(0, 0, 0, 0.5), 0 4px 16px rgba(0, 0, 0, 0.3);
+
+  --animate-drift: drift 22s ease-in-out infinite alternate;
+  --animate-count-up: count-up 1s ease-out forwards;
+  --animate-scan: scan 1.2s ease-out forwards;
+  --animate-shimmer: shimmer 2s infinite;
+  --animate-fade-up: fadeUp 0.5s ease-out forwards;
+
+  @keyframes drift {
+    0% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(40px, 30px) scale(1.08); }
+    100% { transform: translate(-20px, 60px) scale(0.96); }
+  }
+  @keyframes fadeUp {
+    0% { opacity: 0; transform: translateY(16px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+  @keyframes scan {
+    0% { top: -100%; opacity: 0.8; }
+    100% { top: 100%; opacity: 0; }
+  }
+}
 
 :root {
   /* Brand */
