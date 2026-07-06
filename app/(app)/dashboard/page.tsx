@@ -56,6 +56,14 @@ export default function DashboardPage() {
   const [totalCandidates, setTotalCandidates] = useState(0);
   const [triviaIndex, setTriviaIndex]     = useState(0);
   const [recentJobs, setRecentJobs]       = useState<Job[]>([]);
+  const [greeting, setGreeting]           = useState('Welcome');
+
+  useEffect(() => {
+    const hour = new Date().getHours();
+    if (hour < 12) setGreeting('Good morning');
+    else if (hour < 17) setGreeting('Good afternoon');
+    else setGreeting('Good evening');
+  }, []);
 
   // Rotate trivia
   useEffect(() => {
@@ -111,7 +119,7 @@ export default function DashboardPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="font-display text-3xl font-bold text-[#EAF3F0]">
-            Good {new Date().getHours() < 12 ? 'morning' : new Date().getHours() < 17 ? 'afternoon' : 'evening'},{' '}
+            {greeting},{' '}
             {user?.displayName?.split(' ')[0] || 'there'}.
           </h1>
           <p className="text-[#5E7A76] mt-1">Here's your recruiting overview.</p>

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { adminDb, adminStorage } from '@/lib/firebaseAdmin';
+import { adminDb } from '@/lib/firebaseAdmin';
 import { analyzeResume } from '@/lib/gemini';
 import { adminAuth } from '@/lib/firebaseAdmin';
 
@@ -21,9 +21,9 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { jobId, candidateId, fileName, resumeStoragePath, jobTitle, jobDescription, requiredSkills, experienceLevel } = body;
+    const { jobId, candidateId, fileName, resumeBlobUrl, jobTitle, jobDescription, requiredSkills, experienceLevel } = body;
 
-    if (!jobId || !candidateId || !resumeStoragePath) {
+    if (!jobId || !candidateId || !resumeBlobUrl) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
@@ -37,10 +37,12 @@ export async function POST(req: NextRequest) {
     const candidateRef = adminDb.doc(`jobs/${jobId}/candidates/${candidateId}`);
     await candidateRef.update({ status: 'analyzing' });
 
-    // Fetch file from Storage
-    const bucket = adminStorage.bucket();
-    const file = bucket.file(resumeStoragePath);
-    const [fileBuffer] = await file.download();
+    // Fetch file from Vercel Blob
+    const fileRes = await fetch(resumeBlobUrl);
+    if (!fileRes.ok) {
+      throw new Error(`Failed to download resume from Blob: ${fileRes.statusText}`);
+    }
+    const fileBuffer = Buffer.from(await fileRes.arrayBuffer());
 
     const isPDF = fileName.toLowerCase().endsWith('.pdf');
     const isDOCX = fileName.toLowerCase().endsWith('.docx');

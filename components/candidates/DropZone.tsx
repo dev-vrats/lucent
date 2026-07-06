@@ -4,13 +4,11 @@ import { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Upload, FileText, X, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
-import {
-  ref as storageRef, uploadBytesResumable, getDownloadURL,
-} from 'firebase/storage';
+import { upload } from '@vercel/blob/client';
 import {
   collection, addDoc, serverTimestamp, doc, updateDoc,
 } from 'firebase/firestore';
-import { storage, db } from '@/lib/firebase';
+import { db } from '@/lib/firebase';
 import { User } from 'firebase/auth';
 
 interface FileUploadState {
@@ -45,7 +43,7 @@ export function DropZone({ jobId, user, jobTitle, jobDescription, requiredSkills
         {
           jobId,
           fileName: file.name,
-          resumeStoragePath: '',
+          resumeBlobUrl: '', // Using Blob URL instead of Firebase Storage path
           status: 'uploading',
           pipelineStage: 'new',
           recruiterNotes: '',
@@ -55,26 +53,19 @@ export function DropZone({ jobId, user, jobTitle, jobDescription, requiredSkills
       const candidateId = candidateRef.id;
       updateUpload(index, { candidateId });
 
-      // 2. Upload to Firebase Storage
-      const path = `resumes/${jobId}/${candidateId}/${file.name}`;
-      const fileRef = storageRef(storage, path);
-      const task = uploadBytesResumable(fileRef, file);
-
-      await new Promise<void>((resolve, reject) => {
-        task.on(
-          'state_changed',
-          (snap) => {
-            const pct = Math.round((snap.bytesTransferred / snap.totalBytes) * 100);
-            updateUpload(index, { progress: pct });
-          },
-          (err) => reject(err),
-          () => resolve()
-        );
+      // 2. Upload to Vercel Blob
+      const newBlob = await upload(file.name, file, {
+        access: 'public',
+        handleUploadUrl: '/api/upload',
+        onUploadProgress: (progressEvent) => {
+          const pct = Math.round((progressEvent.loaded / progressEvent.total) * 100);
+          updateUpload(index, { progress: pct });
+        },
       });
 
       // 3. Update storage path
       await updateDoc(doc(db, 'jobs', jobId, 'candidates', candidateId), {
-        resumeStoragePath: path,
+        resumeBlobUrl: newBlob.url,
         status: 'analyzing',
       });
       updateUpload(index, { status: 'analyzing', progress: 100 });
@@ -91,7 +82,7 @@ export function DropZone({ jobId, user, jobTitle, jobDescription, requiredSkills
           jobId,
           candidateId,
           fileName: file.name,
-          resumeStoragePath: path,
+          resumeBlobUrl: newBlob.url,
           jobTitle,
           jobDescription,
           requiredSkills,
