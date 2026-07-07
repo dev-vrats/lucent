@@ -77,7 +77,7 @@ export default function JobPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${idToken}` },
         body: JSON.stringify({
-          jobId, candidateId, fileName: c.fileName, resumeStoragePath: c.resumeStoragePath,
+          jobId, candidateId, fileName: c.fileName, resumeBlobUrl: c.resumeBlobUrl,
           jobTitle: job.title, jobDescription: job.description,
           requiredSkills: job.requiredSkills, experienceLevel: job.experienceLevel,
         }),

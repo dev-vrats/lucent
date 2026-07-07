@@ -46,9 +46,9 @@ export async function POST(req: NextRequest) {
     await candidateRef.update({ status: 'analyzing' });
 
     // Fetch file from Vercel Blob
-    const fileRes = await fetch(resumeBlobUrl);
+    const fileRes = await fetch(resumeBlobUrl, { cache: 'no-store' });
     if (!fileRes.ok) {
-      throw new Error(`Failed to download resume from Blob: ${fileRes.statusText}`);
+      throw new Error(`Failed to download resume from Blob: ${fileRes.statusText} (${fileRes.status})`);
     }
     const fileBuffer = Buffer.from(await fileRes.arrayBuffer());
 

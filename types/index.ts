@@ -50,7 +50,7 @@ export interface Candidate {
   id: string;
   jobId: string;
   fileName: string;
-  resumeStoragePath: string;
+  resumeBlobUrl: string;
   status: CandidateStatus;
   pipelineStage: PipelineStage;
   analysis?: CandidateAnalysis;
