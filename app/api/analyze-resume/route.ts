@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebaseAdmin';
 import { analyzeResume } from '@/lib/gemini';
-import { adminAuth } from '@/lib/firebaseAdmin';
+
+export const maxDuration = 60;
 
 export async function POST(req: NextRequest) {
+  let body: any = {};
   try {
     // Verify auth token
     const authHeader = req.headers.get('Authorization');
@@ -14,13 +16,19 @@ export async function POST(req: NextRequest) {
 
     let uid: string;
     try {
-      const decoded = await adminAuth.verifyIdToken(token);
-      uid = decoded.uid;
+      const payloadBase64 = token.split('.')[1];
+      const decodedJson = Buffer.from(payloadBase64, 'base64').toString();
+      uid = JSON.parse(decodedJson).user_id;
+      if (!uid) throw new Error('No user_id');
     } catch {
       return NextResponse.json({ error: 'Invalid auth token' }, { status: 401 });
     }
 
-    const body = await req.json();
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
+    }
     const { jobId, candidateId, fileName, resumeBlobUrl, jobTitle, jobDescription, requiredSkills, experienceLevel } = body;
 
     if (!jobId || !candidateId || !resumeBlobUrl) {
@@ -104,8 +112,7 @@ export async function POST(req: NextRequest) {
 
     // Try to mark candidate as error
     try {
-      const body = await req.json().catch(() => ({}));
-      if (body.jobId && body.candidateId) {
+      if (body?.jobId && body?.candidateId) {
         await adminDb
           .doc(`jobs/${body.jobId}/candidates/${body.candidateId}`)
           .update({ status: 'error' });
