@@ -90,13 +90,20 @@ export default function DashboardPage() {
     jobs.forEach((job) => {
       const q = query(
         collection(db, 'jobs', job.id, 'candidates'),
-        where('status', '==', 'analyzed'),
-        orderBy('analysis.overallMatchScore', 'desc'),
-        limit(1)
+        where('status', '==', 'analyzed')
       );
       const unsub = onSnapshot(q, (snap) => {
         if (cancelled || snap.empty) return;
-        const c = { id: snap.docs[0].id, ...snap.docs[0].data(), jobTitle: job.title } as Candidate & { jobTitle?: string };
+        
+        // Find best candidate in memory to avoid composite index
+        let bestDoc = snap.docs[0];
+        for (let i = 1; i < snap.docs.length; i++) {
+          const aScore = snap.docs[i].data().analysis?.overallMatchScore ?? 0;
+          const bScore = bestDoc.data().analysis?.overallMatchScore ?? 0;
+          if (aScore > bScore) bestDoc = snap.docs[i];
+        }
+        
+        const c = { id: bestDoc.id, ...bestDoc.data(), jobTitle: job.title } as Candidate & { jobTitle?: string };
         if (!best || (c.analysis?.overallMatchScore ?? 0) > (best.analysis?.overallMatchScore ?? 0)) {
           best = c;
           setTopCandidate({ ...best });

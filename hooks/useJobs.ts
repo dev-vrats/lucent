@@ -23,13 +23,20 @@ export function useJobs(user: User | null) {
 
     const q = query(
       collection(db, 'jobs'),
-      where('ownerId', '==', user.uid),
-      orderBy('createdAt', 'desc')
+      where('ownerId', '==', user.uid)
     );
 
     const unsubscribe = onSnapshot(q,
       (snapshot) => {
-        const jobList = snapshot.docs.map((d) => ({ id: d.id, ...d.data() } as Job));
+        let jobList = snapshot.docs.map((d) => ({ id: d.id, ...d.data() } as Job));
+        
+        // Sort in memory to avoid needing a Firestore composite index
+        jobList.sort((a, b) => {
+          const timeA = a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
+          const timeB = b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
+          return timeB - timeA;
+        });
+        
         setJobs(jobList);
         setLoading(false);
       },
