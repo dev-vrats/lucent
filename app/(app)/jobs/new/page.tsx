@@ -217,11 +217,11 @@ export default function NewJobPage() {
         </div>
 
         {/* Submit */}
-        <div className="flex justify-end gap-3 pt-2">
-          <Link href="/dashboard">
-            <Button type="button" variant="ghost">Cancel</Button>
+        <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-2">
+          <Link href="/dashboard" className="w-full sm:w-auto">
+            <Button type="button" variant="ghost" className="w-full">Cancel</Button>
           </Link>
-          <Button type="submit" loading={submitting}>
+          <Button type="submit" loading={submitting} className="w-full sm:w-auto">
             <Plus className="w-4 h-4" /> Create job
           </Button>
         </div>

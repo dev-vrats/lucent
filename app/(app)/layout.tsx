@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { Sidebar } from '@/components/nav/Sidebar';
+import { BottomNav } from '@/components/nav/BottomNav';
 import { Loader2 } from 'lucide-react';
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
@@ -27,9 +28,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   if (!user) return null;
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen pb-20 md:pb-0">
       <Sidebar />
-      <main className="flex-1 ml-60 p-6 md:p-8">
+      <BottomNav />
+      <main className="flex-1 md:ml-60 p-4 sm:p-6 md:p-8 w-full max-w-[100vw] overflow-x-hidden">
         {children}
       </main>
     </div>

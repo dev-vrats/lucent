@@ -123,16 +123,16 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6 max-w-6xl">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="font-display text-3xl font-bold text-[#EAF3F0]">
+          <h1 className="font-display text-2xl sm:text-3xl font-bold text-[#EAF3F0]">
             {greeting},{' '}
             {user?.displayName?.split(' ')[0] || 'there'}.
           </h1>
-          <p className="text-[#5E7A76] mt-1">Here's your recruiting overview.</p>
+          <p className="text-[#5E7A76] mt-1 text-sm sm:text-base">Here's your recruiting overview.</p>
         </div>
-        <Link href="/jobs/new">
-          <Button><Plus className="w-4 h-4" /> New Job</Button>
+        <Link href="/jobs/new" className="w-full sm:w-auto">
+          <Button className="w-full sm:w-auto"><Plus className="w-4 h-4" /> New Job</Button>
         </Link>
       </div>
 

@@ -34,7 +34,7 @@ export function Sidebar() {
     : user?.email?.[0].toUpperCase() ?? '?';
 
   return (
-    <aside className="fixed left-0 top-0 h-full w-60 flex flex-col glass-card rounded-none border-r border-[rgba(164,191,157,0.1)] z-30">
+    <aside className="hidden md:flex fixed left-0 top-0 h-full w-60 flex-col glass-card rounded-none border-r border-[rgba(164,191,157,0.1)] z-30">
       {/* Logo */}
       <div className="p-5 border-b border-[rgba(164,191,157,0.08)]">
         <Link href="/dashboard" className="flex items-center gap-2.5">

@@ -34,19 +34,19 @@ export default function JobsListPage() {
   return (
     <div className="max-w-4xl space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="font-display text-3xl font-bold text-[#EAF3F0]">Jobs</h1>
-          <p className="text-[#5E7A76] mt-1">
+          <h1 className="font-display text-2xl sm:text-3xl font-bold text-[#EAF3F0]">Jobs</h1>
+          <p className="text-[#5E7A76] mt-1 text-sm sm:text-base">
             {loading ? '…' : `${jobs.length} job${jobs.length !== 1 ? 's' : ''} total`}
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="secondary" size="sm" onClick={() => setCmdOpen(true)}>
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          <Button variant="secondary" size="sm" onClick={() => setCmdOpen(true)} className="flex-1 sm:flex-none justify-center">
             <span className="text-xs font-mono">⌘K</span> Search
           </Button>
-          <Link href="/jobs/new">
-            <Button><Plus className="w-4 h-4" /> New Job</Button>
+          <Link href="/jobs/new" className="flex-1 sm:flex-none">
+            <Button className="w-full justify-center"><Plus className="w-4 h-4" /> New Job</Button>
           </Link>
         </div>
       </div>
