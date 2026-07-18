@@ -45,13 +45,13 @@ export async function POST(req: NextRequest) {
     const candidateRef = adminDb.doc(`jobs/${jobId}/candidates/${candidateId}`);
     await candidateRef.update({ status: 'analyzing' });
 
-    // Fetch file from Vercel Blob with retry logic for propagation delays
-    let fileRes = await fetch(resumeBlobUrl, { cache: 'no-store' });
+    // Fetch file from Vercel Blob with retry logic for propagation delays & CDN cache busting
+    let fileRes = await fetch(`${resumeBlobUrl}?t=${Date.now()}`, { cache: 'no-store' });
     let attempts = 0;
     while (!fileRes.ok && fileRes.status === 404 && attempts < 3) {
       console.log(`Blob not found yet (attempt ${attempts + 1}). Retrying in 1.5s...`);
       await new Promise(resolve => setTimeout(resolve, 1500));
-      fileRes = await fetch(resumeBlobUrl, { cache: 'no-store' });
+      fileRes = await fetch(`${resumeBlobUrl}?t=${Date.now()}`, { cache: 'no-store' });
       attempts++;
     }
 
